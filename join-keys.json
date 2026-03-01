@@ -2,7 +2,7 @@
   "keys": [
     {
       "key": "ocj_starteam01",
-      "name": "团队成员 01",
+      "name": "チームメンバー 01",
       "maxConcurrent": 3,
       "used": true,
       "usedBy": "阿龙虾",
@@ -12,37 +12,37 @@
     },
     {
       "key": "ocj_starteam02",
-      "name": "团队成员 02",
+      "name": "チームメンバー 02",
       "maxConcurrent": 3
     },
     {
       "key": "ocj_starteam03",
-      "name": "团队成员 03",
+      "name": "チームメンバー 03",
       "maxConcurrent": 3
     },
     {
       "key": "ocj_starteam04",
-      "name": "团队成员 04",
+      "name": "チームメンバー 04",
       "maxConcurrent": 3
     },
     {
       "key": "ocj_starteam05",
-      "name": "团队成员 05",
+      "name": "チームメンバー 05",
       "maxConcurrent": 3
     },
     {
       "key": "ocj_starteam06",
-      "name": "团队成员 06",
+      "name": "チームメンバー 06",
       "maxConcurrent": 3
     },
     {
       "key": "ocj_starteam07",
-      "name": "团队成员 07",
+      "name": "チームメンバー 07",
       "maxConcurrent": 3
     },
     {
       "key": "ocj_starteam08",
-      "name": "团队成员 08",
+      "name": "チームメンバー 08",
       "maxConcurrent": 3
     }
   ]

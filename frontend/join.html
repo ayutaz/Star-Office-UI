@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>加入 Star 的像素办公室</title>
+    <title>Starのピクセルオフィスに参加</title>
     <style>
         @font-face {
             font-family: 'ArkPixel';
-            src: url('/static/fonts/ark-pixel-12px-proportional-zh_cn.ttf.woff2') format('woff2');
+            src: url('/static/fonts/ark-pixel-12px-proportional-ja.ttf.woff2') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
@@ -100,26 +100,26 @@
     </style>
 </head>
 <body>
-    <h1>⭐ 加入 Star 的像素办公室</h1>
+    <h1>⭐ Starのピクセルオフィスに参加</h1>
     <div class="container">
         <div class="form-group">
-            <label>你的名字（会显示在办公室）</label>
-            <input type="text" id="agentName" placeholder="例如：小龙虾助手" maxlength="20">
+            <label>あなたの名前（オフィスに表示されます）</label>
+            <input type="text" id="agentName" placeholder="例: アシスタント" maxlength="20">
         </div>
-        <!-- 状态与细节改为自动同步，不在 join 页面填写 -->
+        <!-- 状態と詳細は自動同期のため、joinページでは入力不要 -->
         <div class="form-group">
-            <label>Agent 接入密钥（一次性）</label>
-            <input type="text" id="joinKey" placeholder="请输入你拿到的 join key" maxlength="64">
+            <label>エージェント接続キー（ワンタイム）</label>
+            <input type="text" id="joinKey" placeholder="取得したjoin keyを入力" maxlength="64">
         </div>
-        <button id="joinBtn">加入办公室</button>
-        <button id="leaveBtn" style="margin-top:10px; background:#555; border-color:#555;">离开办公室</button>
+        <button id="joinBtn">オフィスに参加</button>
+        <button id="leaveBtn" style="margin-top:10px; background:#555; border-color:#555;">オフィスから退出</button>
         <div id="status" class="status" style="display:none;"></div>
     </div>
     <div class="note">
-        ⚠️ 注意：join 页面仅需要名字 + 一次性 join key<br>
-        状态与状态细节会由 agent 后续自动推送同步
+        ⚠️ 注意: joinページでは名前 + ワンタイムjoin keyのみ必要です<br>
+        状態と状態詳細はエージェントが後から自動的にプッシュ同期します
         <br><br>
-        📌 邀请说明：
+        📌 招待の説明:
         <a href="/invite" style="color:#ffd700; text-decoration: underline;">https://office.example.com/invite</a>
     </div>
 
@@ -140,11 +140,11 @@
             const name = agentNameInput.value.trim();
             const joinKey = joinKeyInput.value.trim();
             if (!name) {
-                showStatus('请先输入你的名字～', false);
+                showStatus('名前を入力してください', false);
                 return;
             }
             if (!joinKey) {
-                showStatus('请先输入 Agent 接入密钥～', false);
+                showStatus('エージェント接続キーを入力してください', false);
                 return;
             }
             try {
@@ -155,19 +155,19 @@
                 });
                 const data = await response.json();
                 if (data.ok) {
-                    showStatus('加入成功！刷新办公室就能看到你啦 ✨', true);
+                    showStatus('参加成功! オフィスを更新するとあなたが表示されます ✨', true);
                 } else {
-                    showStatus(data.msg || '加入失败', false);
+                    showStatus(data.msg || '参加に失敗しました', false);
                 }
             } catch (e) {
-                showStatus('网络出错，请重试', false);
+                showStatus('ネットワークエラーです。再試行してください', false);
             }
         }
 
         async function leave() {
             const name = agentNameInput.value.trim();
             if (!name) {
-                showStatus('请先输入你要离开的名字～', false);
+                showStatus('退出する名前を入力してください', false);
                 return;
             }
             try {
@@ -178,12 +178,12 @@
                 });
                 const data = await response.json();
                 if (data.ok) {
-                    showStatus('已离开办公室 👋', true);
+                    showStatus('オフィスから退出しました 👋', true);
                 } else {
-                    showStatus(data.msg || '离开失败', false);
+                    showStatus(data.msg || '退出に失敗しました', false);
                 }
             } catch (e) {
-                showStatus('网络出错，请重试', false);
+                showStatus('ネットワークエラーです。再試行してください', false);
             }
         }
 

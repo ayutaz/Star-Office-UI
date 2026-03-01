@@ -18,43 +18,42 @@ JOIN_KEYS_FILE = os.path.join(ROOT_DIR, "join-keys.json")
 
 
 def get_yesterday_date_str():
-    """获取昨天的日期字符串 YYYY-MM-DD"""
+    """昨日の日付文字列 YYYY-MM-DD を取得"""
     yesterday = datetime.now() - timedelta(days=1)
     return yesterday.strftime("%Y-%m-%d")
 
 
 def sanitize_content(text):
-    """清理内容，保护隐私"""
+    """コンテンツをサニタイズし、プライバシーを保護"""
     import re
-    
-    # 移除 OpenID、User ID 等
-    text = re.sub(r'ou_[a-f0-9]+', '[用户]', text)
-    text = re.sub(r'user_id="[^"]+"', 'user_id="[隐藏]"', text)
-    
-    # 移除具体的人名（如果有的话）
-    # 这里可以根据需要添加更多规则
-    
-    # 移除 IP 地址、路径等敏感信息
-    text = re.sub(r'/root/[^"\s]+', '[路径]', text)
+
+    # OpenID、User ID などを除去
+    text = re.sub(r'ou_[a-f0-9]+', '[ユーザー]', text)
+    text = re.sub(r'user_id="[^"]+"', 'user_id="[非表示]"', text)
+
+    # 具体的な人名を除去（必要に応じてルールを追加）
+
+    # IPアドレス、パスなどの機密情報を除去
+    text = re.sub(r'/root/[^"\s]+', '[パス]', text)
     text = re.sub(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', '[IP]', text)
-    
-    # 移除电话号码、邮箱等
-    text = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '[邮箱]', text)
-    text = re.sub(r'1[3-9]\d{9}', '[手机号]', text)
+
+    # 電話番号、メールアドレスなどを除去
+    text = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '[メール]', text)
+    text = re.sub(r'1[3-9]\d{9}', '[電話番号]', text)
     
     return text
 
 
 def extract_memo_from_file(file_path):
-    """从 memory 文件中提取适合展示的 memo 内容（睿智风格的总结）"""
+    """memory ファイルから表示用のメモ内容を抽出（名言付きサマリー）"""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
         
-        # 提取真实内容，不做过度包装
+        # 実際のコンテンツを抽出（過度な装飾はしない）
         lines = content.strip().split("\n")
-        
-        # 提取核心要点
+
+        # 核心ポイントを抽出
         core_points = []
         for line in lines:
             line = line.strip()
@@ -68,44 +67,44 @@ def extract_memo_from_file(file_path):
                 core_points.append(line)
         
         if not core_points:
-            return "「昨日无事记录」\n\n若有恒，何必三更眠五更起；最无益，莫过一日曝十日寒。"
+            return "「昨日の記録なし」\n\n継続は力なり。一日だけ頑張って十日休むのが一番の無駄。"
         
-        # 从核心内容中提取 2-3 个关键点
+        # 核心コンテンツから2〜3個のキーポイントを抽出
         selected_points = core_points[:3]
         
-        # 睿智语录库
+        # 名言集
         wisdom_quotes = [
-            "「工欲善其事，必先利其器。」",
-            "「不积跬步，无以至千里；不积小流，无以成江海。」",
-            "「知行合一，方可致远。」",
-            "「业精于勤，荒于嬉；行成于思，毁于随。」",
-            "「路漫漫其修远兮，吾将上下而求索。」",
-            "「昨夜西风凋碧树，独上高楼，望尽天涯路。」",
-            "「衣带渐宽终不悔，为伊消得人憔悴。」",
-            "「众里寻他千百度，蓦然回首，那人却在，灯火阑珊处。」",
-            "「世事洞明皆学问，人情练达即文章。」",
-            "「纸上得来终觉浅，绝知此事要躬行。」"
+            "「良い仕事をするには、まず道具を整えよ。」",
+            "「千里の道も一歩から。小さな流れも積もれば大河となる。」",
+            "「知行合一、それでこそ遠くへ行ける。」",
+            "「業は勤めるに精しく、遊びに荒む。行いは思慮に成り、怠惰に壊れる。」",
+            "「道は長く遠いが、私は上へ下へと求め続ける。」",
+            "「昨夜の西風が緑の木を散らし、独り高楼に登り、天涯の道を見渡す。」",
+            "「帯が緩くなっても悔いはなし、君のためにやつれても構わない。」",
+            "「百度探し求めて、ふと振り返れば、その人は灯火の薄明かりの中にいた。」",
+            "「世事に通じることは皆学問、人情に練達することは即ち文章。」",
+            "「紙上で得た知識は浅い、物事は実践してこそ真に理解できる。」"
         ]
         
         import random
         quote = random.choice(wisdom_quotes)
         
-        # 组合内容
+        # コンテンツを組み立て
         result = []
-        
-        # 添加核心内容
+
+        # 核心コンテンツを追加
         if selected_points:
             for i, point in enumerate(selected_points):
-                # 隐私清理
+                # プライバシーサニタイズ
                 point = sanitize_content(point)
-                # 截断过长的内容
+                # 長すぎるコンテンツを切り詰め
                 if len(point) > 40:
                     point = point[:37] + "..."
-                # 每行最多 20 字
+                # 1行最大20文字
                 if len(point) <= 20:
                     result.append(f"· {point}")
                 else:
-                    # 按 20 字切分
+                    # 20文字で分割
                     for j in range(0, len(point), 20):
                         chunk = point[j:j+20]
                         if j == 0:
@@ -113,7 +112,7 @@ def extract_memo_from_file(file_path):
                         else:
                             result.append(f"  {chunk}")
         
-        # 添加睿智语录
+        # 名言を追加
         if quote:
             if len(quote) <= 20:
                 result.append(f"\n{quote}")
@@ -128,8 +127,8 @@ def extract_memo_from_file(file_path):
         return "\n".join(result).strip()
         
     except Exception as e:
-        print(f"提取 memo 失败: {e}")
-        return "「昨日记录加载失败」\n\n「往者不可谏，来者犹可追。」"
+        print(f"メモ抽出失敗: {e}")
+        return "「昨日の記録の読み込み失敗」\n\n「過ぎたことは取り返せないが、未来は追いかけられる。」"
 
 app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="/static")
 
@@ -151,7 +150,7 @@ def add_no_cache_headers(response):
 # Default state
 DEFAULT_STATE = {
     "state": "idle",
-    "detail": "等待任务中...",
+    "detail": "タスク待機中...",
     "progress": 0,
     "updated_at": datetime.now().isoformat()
 }
@@ -194,7 +193,7 @@ def load_state():
                 age = (datetime.now() - dt).total_seconds()
             if age > ttl:
                 state["state"] = "idle"
-                state["detail"] = "待命中（自动回到休息区）"
+                state["detail"] = "待機中（自動で休憩エリアに戻りました）"
                 state["progress"] = 0
                 state["updated_at"] = datetime.now().isoformat()
                 # persist the auto-idle so every client sees it consistently
@@ -256,7 +255,7 @@ DEFAULT_AGENTS = [
         "name": "Star",
         "isMain": True,
         "state": "idle",
-        "detail": "待命中，随时准备为你服务",
+        "detail": "待機中、いつでも対応できます",
         "updated_at": datetime.now().isoformat(),
         "area": "breakroom",
         "source": "local",
@@ -270,7 +269,7 @@ DEFAULT_AGENTS = [
         "name": "NPC 1",
         "isMain": False,
         "state": "writing",
-        "detail": "在整理热点日报...",
+        "detail": "ホットトピック日報を整理中...",
         "updated_at": datetime.now().isoformat(),
         "area": "writing",
         "source": "demo",
@@ -317,9 +316,9 @@ def save_join_keys(data):
 
 
 def normalize_agent_state(s):
-    """归一化状态，提高兼容性。
-    兼容输入：working/busy → writing; run/running → executing; sync → syncing; research → researching.
-    未识别默认返回 idle.
+    """状態を正規化し、互換性を向上。
+    互換入力: working/busy → writing; run/running → executing; sync → syncing; research → researching.
+    未認識の場合はデフォルトで idle を返す。
     """
     if not s:
         return 'idle'
@@ -334,7 +333,7 @@ def normalize_agent_state(s):
         return 'researching'
     if s_lower in {'idle', 'writing', 'researching', 'executing', 'syncing', 'error'}:
         return s_lower
-    # 默认 fallback
+    # デフォルト fallback
     return 'idle'
 
 
@@ -374,7 +373,7 @@ def get_agents():
         auth_expires_at_str = a.get("authExpiresAt")
         auth_status = a.get("authStatus", "pending")
 
-        # 1) 超时未批准自动 leave
+        # 1) タイムアウトで未承認のまま自動 leave
         if auth_status == "pending" and auth_expires_at_str:
             try:
                 auth_expires_at = datetime.fromisoformat(auth_expires_at_str)
@@ -391,13 +390,13 @@ def get_agents():
             except Exception:
                 pass
 
-        # 2) 超时未推送自动离线（超过5分钟）
+        # 2) プッシュ未着でタイムアウト自動オフライン（5分超過）
         last_push_at_str = a.get("lastPushAt")
         if auth_status == "approved" and last_push_at_str:
             try:
                 last_push_at = datetime.fromisoformat(last_push_at_str)
                 age = (now - last_push_at).total_seconds()
-                if age > 300:  # 5分钟无推送自动离线
+                if age > 300:  # 5分間プッシュなしで自動オフライン
                     a["authStatus"] = "offline"
             except Exception:
                 pass
@@ -417,16 +416,16 @@ def agent_approve():
         data = request.get_json()
         agent_id = (data.get("agentId") or "").strip()
         if not agent_id:
-            return jsonify({"ok": False, "msg": "缺少 agentId"}), 400
+            return jsonify({"ok": False, "msg": "agentId が必要です"}), 400
 
         agents = load_agents_state()
         target = next((a for a in agents if a.get("agentId") == agent_id and not a.get("isMain")), None)
         if not target:
-            return jsonify({"ok": False, "msg": "未找到 agent"}), 404
+            return jsonify({"ok": False, "msg": "agent が見つかりません"}), 404
 
         target["authStatus"] = "approved"
         target["authApprovedAt"] = datetime.now().isoformat()
-        target["authExpiresAt"] = (datetime.now() + timedelta(hours=24)).isoformat()  # 默认授权24h
+        target["authExpiresAt"] = (datetime.now() + timedelta(hours=24)).isoformat()  # デフォルト認可24h
 
         save_agents_state(agents)
         return jsonify({"ok": True, "agentId": agent_id, "authStatus": "approved"})
@@ -441,12 +440,12 @@ def agent_reject():
         data = request.get_json()
         agent_id = (data.get("agentId") or "").strip()
         if not agent_id:
-            return jsonify({"ok": False, "msg": "缺少 agentId"}), 400
+            return jsonify({"ok": False, "msg": "agentId が必要です"}), 400
 
         agents = load_agents_state()
         target = next((a for a in agents if a.get("agentId") == agent_id and not a.get("isMain")), None)
         if not target:
-            return jsonify({"ok": False, "msg": "未找到 agent"}), 404
+            return jsonify({"ok": False, "msg": "agent が見つかりません"}), 404
 
         target["authStatus"] = "rejected"
         target["authRejectedAt"] = datetime.now().isoformat()
@@ -478,7 +477,7 @@ def join_agent():
     try:
         data = request.get_json()
         if not isinstance(data, dict) or not data.get("name"):
-            return jsonify({"ok": False, "msg": "请提供名字"}), 400
+            return jsonify({"ok": False, "msg": "名前を入力してください"}), 400
 
         name = data["name"].strip()
         state = data.get("state", "idle")
@@ -489,25 +488,25 @@ def join_agent():
         state = normalize_agent_state(state)
 
         if not join_key:
-            return jsonify({"ok": False, "msg": "请提供接入密钥"}), 400
+            return jsonify({"ok": False, "msg": "接続キーを入力してください"}), 400
 
         keys_data = load_join_keys()
         key_item = next((k for k in keys_data.get("keys", []) if k.get("key") == join_key), None)
         if not key_item:
-            return jsonify({"ok": False, "msg": "接入密钥无效"}), 403
-        # key 可复用：不再因为 used=true 拒绝
+            return jsonify({"ok": False, "msg": "接続キーが無効です"}), 403
+        # キーは再利用可能: used=true でも拒否しない
 
         with join_lock:
-            # 在锁内重新读取，避免并发请求都基于同一旧快照通过校验
+            # ロック内で再読み込みし、並行リクエストが同じ古いスナップショットで検証を通過するのを防ぐ
             keys_data = load_join_keys()
             key_item = next((k for k in keys_data.get("keys", []) if k.get("key") == join_key), None)
             if not key_item:
-                return jsonify({"ok": False, "msg": "接入密钥无效"}), 403
+                return jsonify({"ok": False, "msg": "接続キーが無効です"}), 403
 
             agents = load_agents_state()
 
-            # 并发上限：同一个 key “同时在线”最多 3 个。
-            # 在线判定：lastPushAt/updated_at 在 5 分钟内；否则视为 offline，不计入并发。
+            # 同時接続上限: 同一キーで「同時オンライン」は最大3つ。
+            # オンライン判定: lastPushAt/updated_at が5分以内。それ以外は offline 扱いで同時接続にカウントしない。
             now = datetime.now()
             existing = next((a for a in agents if a.get("name") == name and not a.get("isMain")), None)
             existing_id = existing.get("agentId") if existing else None
@@ -552,7 +551,7 @@ def join_agent():
 
             if active_count >= max_concurrent:
                 save_agents_state(agents)
-                return jsonify({"ok": False, "msg": f"该接入密钥当前并发已达上限（{max_concurrent}），请稍后或换另一个 key"}), 429
+                return jsonify({"ok": False, "msg": f"この接続キーの同時接続数が上限（{max_concurrent}）に達しました。しばらく待つか別のキーを使用してください"}), 429
 
             if existing:
                 existing["state"] = state
@@ -564,7 +563,7 @@ def join_agent():
                 existing["authStatus"] = "approved"
                 existing["authApprovedAt"] = datetime.now().isoformat()
                 existing["authExpiresAt"] = (datetime.now() + timedelta(hours=24)).isoformat()
-                existing["lastPushAt"] = datetime.now().isoformat()  # join 视为上线，纳入并发/离线判定
+                existing["lastPushAt"] = datetime.now().isoformat()  # join はオンラインとみなし、同時接続/オフライン判定に含める
                 if not existing.get("avatar"):
                     import random
                     existing["avatar"] = random.choice(["guest_role_1", "guest_role_2", "guest_role_3", "guest_role_4", "guest_role_5", "guest_role_6"])
@@ -597,12 +596,12 @@ def join_agent():
             key_item["usedAt"] = datetime.now().isoformat()
             key_item["reusable"] = True
 
-            # 拿到有效 key 直接批准，不再等待主人手动点击
-            # （状态已在上面 existing/new 分支写入）
+            # 有効なキーを取得したら直接承認、オーナーの手動クリックを待たない
+            # （状態は上記の existing/new 分岐で書き込み済み）
             save_agents_state(agents)
             save_join_keys(keys_data)
 
-        return jsonify({"ok": True, "agentId": agent_id, "authStatus": "approved", "nextStep": "已自动批准，立即开始推送状态"})
+        return jsonify({"ok": True, "agentId": agent_id, "authStatus": "approved", "nextStep": "自動承認済み、すぐに状態プッシュを開始してください"})
     except Exception as e:
         return jsonify({"ok": False, "msg": str(e)}), 500
 
@@ -621,7 +620,7 @@ def leave_agent():
         agent_id = (data.get("agentId") or "").strip()
         name = (data.get("name") or "").strip()
         if not agent_id and not name:
-            return jsonify({"ok": False, "msg": "请提供 agentId 或名字"}), 400
+            return jsonify({"ok": False, "msg": "agentId または名前を入力してください"}), 400
 
         agents = load_agents_state()
 
@@ -633,7 +632,7 @@ def leave_agent():
             target = next((a for a in agents if a.get("name") == name and not a.get("isMain")), None)
 
         if not target:
-            return jsonify({"ok": False, "msg": "没有找到要离开的 agent"}), 404
+            return jsonify({"ok": False, "msg": "離脱する agent が見つかりません"}), 404
 
         join_key = target.get("joinKey")
         new_agents = [a for a in agents if a.get("isMain") or a.get("agentId") != target.get("agentId")]
@@ -686,7 +685,7 @@ def agent_push():
         name = (data.get("name") or "").strip()
 
         if not agent_id or not join_key or not state:
-            return jsonify({"ok": False, "msg": "缺少 agentId/joinKey/state"}), 400
+            return jsonify({"ok": False, "msg": "agentId/joinKey/state が必要です"}), 400
 
         valid_states = {"idle", "writing", "researching", "executing", "syncing", "error"}
         state = normalize_agent_state(state)
@@ -694,28 +693,28 @@ def agent_push():
         keys_data = load_join_keys()
         key_item = next((k for k in keys_data.get("keys", []) if k.get("key") == join_key), None)
         if not key_item:
-            return jsonify({"ok": False, "msg": "joinKey 无效"}), 403
-        # key 可复用：不再做 used/usedByAgentId 绑定校验
+            return jsonify({"ok": False, "msg": "joinKey が無効です"}), 403
+        # キーは再利用可能: used/usedByAgentId のバインド検証は不要
 
 
         agents = load_agents_state()
         target = next((a for a in agents if a.get("agentId") == agent_id and not a.get("isMain")), None)
         if not target:
-            return jsonify({"ok": False, "msg": "agent 未注册，请先 join"}), 404
+            return jsonify({"ok": False, "msg": "agent が未登録です。先に join してください"}), 404
 
         # Auth check: only approved agents can push.
         # Note: "offline" is a presence state (stale), not a revoked authorization.
         # Allow offline agents to resume pushing and auto-promote them back to approved.
         auth_status = target.get("authStatus", "pending")
         if auth_status not in {"approved", "offline"}:
-            return jsonify({"ok": False, "msg": "agent 未获授权，请等待主人批准"}), 403
+            return jsonify({"ok": False, "msg": "agent が未認可です。オーナーの承認をお待ちください"}), 403
         if auth_status == "offline":
             target["authStatus"] = "approved"
             target["authApprovedAt"] = datetime.now().isoformat()
             target["authExpiresAt"] = (datetime.now() + timedelta(hours=24)).isoformat()
 
         if target.get("joinKey") != join_key:
-            return jsonify({"ok": False, "msg": "joinKey 不匹配"}), 403
+            return jsonify({"ok": False, "msg": "joinKey が一致しません"}), 403
 
         target["state"] = state
         target["detail"] = detail
@@ -740,9 +739,9 @@ def health():
 
 @app.route("/yesterday-memo", methods=["GET"])
 def get_yesterday_memo():
-    """获取昨日小日记"""
+    """昨日のミニ日記を取得"""
     try:
-        # 先尝试找昨天的文件
+        # まず昨日のファイルを探す
         yesterday_str = get_yesterday_date_str()
         yesterday_file = os.path.join(MEMORY_DIR, f"{yesterday_str}.md")
         
@@ -752,12 +751,12 @@ def get_yesterday_memo():
         if os.path.exists(yesterday_file):
             target_file = yesterday_file
         else:
-            # 如果昨天没有，找最近的一天
+            # 昨日のファイルがなければ、直近の日付を探す
             if os.path.exists(MEMORY_DIR):
                 files = [f for f in os.listdir(MEMORY_DIR) if f.endswith(".md") and re.match(r"\d{4}-\d{2}-\d{2}\.md", f)]
                 if files:
                     files.sort(reverse=True)
-                    # 跳过今天的（如果存在）
+                    # 今日のファイルはスキップ（存在する場合）
                     today_str = datetime.now().strftime("%Y-%m-%d")
                     for f in files:
                         if f != f"{today_str}.md":
@@ -775,7 +774,7 @@ def get_yesterday_memo():
         else:
             return jsonify({
                 "success": False,
-                "msg": "没有找到昨日日记"
+                "msg": "昨日の日記が見つかりません"
             })
     except Exception as e:
         return jsonify({

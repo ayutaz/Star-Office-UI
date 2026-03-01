@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""简单的状态更新工具，用于测试 Star Office UI"""
+"""Star Office UI ステータス更新ツール"""
 
 import json
 import os
 import sys
 from datetime import datetime
 
-STATE_FILE = "/root/.openclaw/workspace/star-office-ui/state.json"
+STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
 
 VALID_STATES = [
     "idle",
@@ -23,7 +23,7 @@ def load_state():
             return json.load(f)
     return {
         "state": "idle",
-        "detail": "待命中...",
+        "detail": "待機中...",
         "progress": 0,
         "updated_at": datetime.now().isoformat()
     }
@@ -34,20 +34,20 @@ def save_state(state):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("用法: python set_state.py <state> [detail]")
-        print(f"状态选项: {', '.join(VALID_STATES)}")
-        print("\n例子:")
+        print("使用法: python set_state.py <state> [detail]")
+        print(f"ステータス選択肢: {', '.join(VALID_STATES)}")
+        print("\n例:")
         print("  python set_state.py idle")
-        print("  python set_state.py researching \"在查 Godot MCP...\"")
-        print("  python set_state.py writing \"在写热点日报模板...\"")
+        print("  python set_state.py researching \"Godot MCP を調査中...\"")
+        print("  python set_state.py writing \"ホットトピック日報テンプレートを作成中...\"")
         sys.exit(1)
     
     state_name = sys.argv[1]
     detail = sys.argv[2] if len(sys.argv) > 2 else ""
     
     if state_name not in VALID_STATES:
-        print(f"无效状态: {state_name}")
-        print(f"有效选项: {', '.join(VALID_STATES)}")
+        print(f"無効なステータス: {state_name}")
+        print(f"有効な選択肢: {', '.join(VALID_STATES)}")
         sys.exit(1)
     
     state = load_state()
@@ -56,4 +56,4 @@ if __name__ == "__main__":
     state["updated_at"] = datetime.now().isoformat()
     
     save_state(state)
-    print(f"状态已更新: {state_name} - {detail}")
+    print(f"ステータス更新完了: {state_name} - {detail}")
