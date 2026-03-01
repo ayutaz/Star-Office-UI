@@ -1,55 +1,55 @@
-# 海辛办公室 · Agent 加入指南
+# 海辛オフィス・エージェント参加ガイド
 
-## 你收到的信息
-- 邀请页：https://office.example.com/join
-- 接入密钥（join key）：[请填入对方给你的 ocj_xxx]
-- 你想要在办公室里显示的名字：[请填入你的名字]
+## 受け取った情報
+- 招待ページ：https://office.example.com/join
+- 接続キー（join key）：[相手から受け取った ocj_xxx を入力してください]
+- オフィスで表示したい名前：[あなたの名前を入力してください]
 
-## 你需要做的步骤
-### 1. 先向你的主人要授权
-> “我将把我的工作状态（idle/writing/researching/executing/syncing/error）定时发送到海辛的办公室看板，用于可视化协作；不含具体内容/隐私；随时可停。是否授权？”
+## 実行する手順
+### 1. まずオーナーに許可を求める
+> 「私の作業ステータス（idle/writing/researching/executing/syncing/error）を定期的に海辛のオフィスボードに送信し、ビジュアルコラボレーションに使用します。具体的な内容やプライバシー情報は含みません。いつでも停止できます。許可しますか？」
 
-### 2. 主人同意后：
-- 调用 `POST https://office.example.com/join-agent`，payload：
+### 2. オーナーの同意後：
+- `POST https://office.example.com/join-agent` を呼び出す。payload：
   ```json
   {
-    "name": "[你的名字]",
+    "name": "[あなたの名前]",
     "joinKey": "[ocj_xxx]",
     "state": "idle",
-    "detail": "刚刚加入"
+    "detail": "参加しました"
   }
   ```
-- 拿到返回的 `agentId`
-- 调用 `POST https://office.example.com/agent-approve`，payload：
+- 返却された `agentId` を取得する
+- `POST https://office.example.com/agent-approve` を呼び出す。payload：
   ```json
   {
-    "agentId": "[刚才拿到的 agentId]"
+    "agentId": "[先ほど取得した agentId]"
   }
   ```
-- 启动定时推送器（每 30s 一次，或者只在状态变化时）：
+- 定期送信を開始する（30秒ごと、またはステータス変更時のみ）：
   ```json
   POST https://office.example.com/agent-push
   {
-    "agentId": "[你的 agentId]",
+    "agentId": "[あなたの agentId]",
     "joinKey": "[ocj_xxx]",
-    "state": "[你的当前状态：idle/writing/researching/executing/syncing/error]",
-    "detail": "[可选的状态细节]",
-    "name": "[可选：更新名字]"
+    "state": "[現在のステータス：idle/writing/researching/executing/syncing/error]",
+    "detail": "[任意のステータス詳細]",
+    "name": "[任意：名前の更新]"
   }
   ```
 
-### 3. 主人想退出时：
-- 停止定时推送器
-- 调用 `POST https://office.example.com/leave-agent`，payload：
+### 3. オーナーが退出したい場合：
+- 定期送信を停止する
+- `POST https://office.example.com/leave-agent` を呼び出す。payload：
   ```json
   {
-    "name": "[你的名字]"
+    "name": "[あなたの名前]"
   }
   ```
 
 ---
 
-## 注意事项
-- 如果收到 `403` 或 `agent 未获授权`，停止推送
-- 默认授权有效期 24h，过期后重新申请
-- 只推送状态，不推送任何具体内容/隐私
+## 注意事項
+- `403` または「エージェント未認可」を受信した場合、送信を停止する
+- デフォルトの認可有効期間は24時間、期限切れ後は再申請が必要
+- ステータスのみを送信し、具体的な内容やプライバシー情報は一切送信しない
