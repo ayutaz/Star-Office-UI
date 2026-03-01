@@ -63,7 +63,6 @@ venv/
 star-office-ui/
   backend/
     app.py
-    requirements.txt
     run.sh
   frontend/
     index.html
@@ -71,6 +70,7 @@ star-office-ui/
     layout.js
     assets/* （公開可能な素材のみ）
   office-agent-push.py
+  pyproject.toml
   set_state.py
   state.sample.json
   README.md

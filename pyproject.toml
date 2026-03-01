@@ -1,0 +1,14 @@
+[project]
+name = "star-office-ui"
+version = "1.0.0"
+description = "Multi-agent pixel office dashboard"
+requires-python = ">=3.10"
+
+dependencies = [
+    "flask>=3.0.2",
+]
+
+[project.optional-dependencies]
+images = ["Pillow>=10.0.0"]
+agent = ["requests>=2.31.0"]
+all = ["Pillow>=10.0.0", "requests>=2.31.0"]

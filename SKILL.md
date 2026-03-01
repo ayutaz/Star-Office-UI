@@ -28,14 +28,13 @@ git clone https://github.com/ringhyacinth/Star-Office-UI.git
 cd Star-Office-UI
 
 # 2) 依存関係をインストール
-python3 -m pip install -r backend/requirements.txt
+uv sync
 
 # 3) ステータスファイルを準備（初回のみ）
 cp state.sample.json state.json
 
 # 4) バックエンドを起動
-cd backend
-python3 app.py
+uv run python backend/app.py
 ```
 
 その後、ユーザーにこう伝えましょう：
@@ -49,16 +48,16 @@ python3 app.py
 
 ```bash
 # 作業中 → デスクへ移動
-python3 set_state.py writing "ドキュメントを整理しています"
+uv run python set_state.py writing "ドキュメントを整理しています"
 
 # 同期中
-python3 set_state.py syncing "進捗を同期中"
+uv run python set_state.py syncing "進捗を同期中"
 
 # エラー発生 → バグエリアへ移動
-python3 set_state.py error "問題を発見しました。調査中です"
+uv run python set_state.py error "問題を発見しました。調査中です"
 
 # 待機中 → 休憩エリアへ戻る
-python3 set_state.py idle "待機中です。いつでも対応できます"
+uv run python set_state.py idle "待機中です。いつでも対応できます"
 ```
 
 ---
